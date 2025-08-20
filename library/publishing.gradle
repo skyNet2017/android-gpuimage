@@ -1,0 +1,27 @@
+apply plugin: 'maven-publish'
+
+afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                //from components.release
+                from components.findByName("release")
+                groupId = 'jp.co.cyberagent.android'
+                artifactId = 'gpuimage'
+                version = '3.0.0'
+            }
+        }
+        repositories {
+            maven {
+                url = "https://nexus.hss01248.tech/repository/maven-releases/"
+                //仓库的用户名及密码
+                credentials {
+                    username 'xxx'
+                    password 'xxx#'
+                }
+            }
+        }
+    }
+}
+
+

@@ -1,5 +1,5 @@
 apply plugin: 'com.android.library'
-
+apply from: "publishing.gradle"
 android {
     compileSdkVersion COMPILE_SDK_VERSION as int
     ndkVersion "28.2.13676358"
@@ -24,6 +24,12 @@ android {
     }
     externalNativeBuild {
         cmake { path "src/main/cpp/CMakeLists.txt" }
+    }
+    publishing {
+        singleVariant('release') {
+            withSourcesJar()
+            withJavadocJar()
+        }
     }
 
     buildTypes {
