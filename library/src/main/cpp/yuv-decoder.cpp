@@ -3,9 +3,10 @@
 #include <android/bitmap.h>
 #include <GLES2/gl2.h>
 
+extern "C" {
 
 JNIEXPORT void JNICALL
-Java_jp_co_cyberagent_android_gpuimage_GPUImageNativeLibrary_YUVtoRBGA(JNIEnv *env, jobject obj,
+Java_jp_co_cyberagent_android_gpuimage_GPUImageNativeLibrary_YUVtoRBGA(JNIEnv *env, jclass obj,
                                                                        jbyteArray yuv420sp,
                                                                        jint width, jint height,
                                                                        jintArray rgbOut) {
@@ -25,8 +26,8 @@ Java_jp_co_cyberagent_android_gpuimage_GPUImageNativeLibrary_YUVtoRBGA(JNIEnv *e
     int h = height;
     sz = w * h;
 
-    jint *rgbData = (jint *) ((*env)->GetPrimitiveArrayCritical(env, rgbOut, 0));
-    jbyte *yuv = (jbyte *) (*env)->GetPrimitiveArrayCritical(env, yuv420sp, 0);
+    jint *rgbData = env->GetIntArrayElements(rgbOut, nullptr);
+    jbyte *yuv = env->GetByteArrayElements(yuv420sp, nullptr);
 
     for (j = 0; j < h; j++) {
         pixPtr = j * w;
@@ -59,12 +60,12 @@ Java_jp_co_cyberagent_android_gpuimage_GPUImageNativeLibrary_YUVtoRBGA(JNIEnv *e
         }
     }
 
-    (*env)->ReleasePrimitiveArrayCritical(env, rgbOut, rgbData, 0);
-    (*env)->ReleasePrimitiveArrayCritical(env, yuv420sp, yuv, 0);
+    env->ReleaseIntArrayElements(rgbOut, rgbData, 0);
+    env->ReleaseByteArrayElements(yuv420sp, yuv, 0);
 }
 
 JNIEXPORT void JNICALL
-Java_jp_co_cyberagent_android_gpuimage_GPUImageNativeLibrary_YUVtoARBG(JNIEnv *env, jobject obj,
+Java_jp_co_cyberagent_android_gpuimage_GPUImageNativeLibrary_YUVtoARBG(JNIEnv *env, jclass obj,
                                                                        jbyteArray yuv420sp,
                                                                        jint width, jint height,
                                                                        jintArray rgbOut) {
@@ -84,8 +85,8 @@ Java_jp_co_cyberagent_android_gpuimage_GPUImageNativeLibrary_YUVtoARBG(JNIEnv *e
     int h = height;
     sz = w * h;
 
-    jint *rgbData = (jint *) ((*env)->GetPrimitiveArrayCritical(env, rgbOut, 0));
-    jbyte *yuv = (jbyte *) (*env)->GetPrimitiveArrayCritical(env, yuv420sp, 0);
+    jint *rgbData = env->GetIntArrayElements(rgbOut, nullptr);
+    jbyte *yuv = env->GetByteArrayElements(yuv420sp, nullptr);
 
     for (j = 0; j < h; j++) {
         pixPtr = j * w;
@@ -118,25 +119,25 @@ Java_jp_co_cyberagent_android_gpuimage_GPUImageNativeLibrary_YUVtoARBG(JNIEnv *e
         }
     }
 
-    (*env)->ReleasePrimitiveArrayCritical(env, rgbOut, rgbData, 0);
-    (*env)->ReleasePrimitiveArrayCritical(env, yuv420sp, yuv, 0);
+    env->ReleaseIntArrayElements(rgbOut, rgbData, 0);
+    env->ReleaseByteArrayElements(yuv420sp, yuv, 0);
 }
 
 
 JNIEXPORT void JNICALL
-Java_jp_co_cyberagent_android_gpuimage_GPUImageNativeLibrary_adjustBitmap(JNIEnv *jenv, jclass thiz,
+Java_jp_co_cyberagent_android_gpuimage_GPUImageNativeLibrary_adjustBitmap(JNIEnv *env, jclass thiz,
                                                                        jobject src) {
     unsigned char *srcByteBuffer;
     int result = 0;
     int i, j;
     AndroidBitmapInfo srcInfo;
 
-    result = AndroidBitmap_getInfo(jenv, src, &srcInfo);
+    result = AndroidBitmap_getInfo(env, src, &srcInfo);
     if (result != ANDROID_BITMAP_RESULT_SUCCESS) {
         return;
     }
 
-    result = AndroidBitmap_lockPixels(jenv, src, (void **) &srcByteBuffer);
+    result = AndroidBitmap_lockPixels(env, src, (void **) &srcByteBuffer);
     if (result != ANDROID_BITMAP_RESULT_SUCCESS) {
         return;
     }
@@ -154,5 +155,7 @@ Java_jp_co_cyberagent_android_gpuimage_GPUImageNativeLibrary_adjustBitmap(JNIEnv
             pIntBuffer[i * width + j] = temp;
         }
     }
-    AndroidBitmap_unlockPixels(jenv, src);
+    AndroidBitmap_unlockPixels(env, src);
+}
+
 }

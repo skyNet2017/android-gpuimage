@@ -17,8 +17,10 @@ add_library( # Sets the name of the library.
         SHARED
 
         # Provides a relative path to your source file(s).
-        yuv-decoder.c)
-
+        yuv-decoder.cpp)
+# ndk r26: 更新 CMakeLists.txt 以启用 16 KB ELF 对齐 添加 16KB ELF 对齐的链接选项（关键新增行）
+target_link_options(yuv-decoder PRIVATE "-Wl,-z,max-page-size=16384")
+target_link_options(yuv-decoder PRIVATE "-Wl,-z,common-page-size=16384")
 # Searches for a specified prebuilt library and stores the path as a
 # variable. Because CMake includes system libraries in the search path by
 # default, you only need to specify the name of the public NDK library

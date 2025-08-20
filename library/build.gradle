@@ -12,7 +12,10 @@ android {
         versionName = VERSION_NAME
         ndk.abiFilters 'armeabi-v7a','arm64-v8a','x86','x86_64'
         externalNativeBuild {
-            cmake { cppFlags "" }
+            cmake {
+                cppFlags ""
+                arguments "-DANDROID_SUPPORT_FLEXIBLE_PAGE_SIZES=ON"
+            }
         }
     }
     compileOptions {
